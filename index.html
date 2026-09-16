@@ -14,7 +14,6 @@
     <div class="brand"><span class="brand-mark">✚</span><div><strong id="centreName">Diagnostic Centre</strong><small id="centreMeta">Centre Admin</small></div></div>
     <div class="top-actions"><button class="icon-btn" id="refreshBtn" title="Refresh">↻</button><button class="avatar" id="userMenu">A</button></div>
   </header>
-
   <aside class="sidebar" id="sidebar">
     <nav>
       <button class="nav-item active" data-view="dashboard"><span>⌂</span>Dashboard</button>
@@ -28,70 +27,34 @@
     </nav>
     <button class="logout" id="logoutBtn">↪ Logout</button>
   </aside>
-
   <main class="main">
     <section class="view active" id="view-dashboard">
       <div class="page-head"><div><p class="eyebrow">OPERATIONS</p><h1>Good day 👋</h1><p class="muted">Keep today's report pipeline moving.</p></div><button class="primary" data-go="capture">＋ New report</button></div>
-      <div class="cards">
-        <article class="metric"><span>Reports today</span><strong id="mToday">—</strong><small>Generated reports</small></article>
-        <article class="metric"><span>Needs verification</span><strong id="mVerify">—</strong><small>Technician action</small></article>
-        <article class="metric"><span>Payment pending</span><strong id="mPending">—</strong><small>Release is gated</small></article>
-        <article class="metric"><span>Credits</span><strong id="mCredits">—</strong><small>Available balance</small></article>
-      </div>
+      <div class="cards"><article class="metric"><span>Reports today</span><strong id="mToday">—</strong><small>Generated reports</small></article><article class="metric"><span>Needs verification</span><strong id="mVerify">—</strong><small>Technician action</small></article><article class="metric"><span>Payment pending</span><strong id="mPending">—</strong><small>Release is gated</small></article><article class="metric"><span>Credits</span><strong id="mCredits">—</strong><small>Available balance</small></article></div>
       <div class="mobile-cta" data-go="capture"><span class="camera">📷</span><div><strong>Take report photo</strong><small>Use your Android camera and upload directly</small></div><span>›</span></div>
       <div class="panel"><div class="panel-head"><div><h2>Workflow</h2><p class="muted">Image → OCR → technician verification → payment → release</p></div></div><div class="workflow"><div><b>1</b><span>Capture</span></div><i>→</i><div><b>2</b><span>OCR</span></div><i>→</i><div><b>3</b><span>Verify</span></div><i>→</i><div><b>4</b><span>Release</span></div></div></div>
       <div class="panel"><div class="panel-head"><h2>Recent reports</h2><button class="text-btn" data-go="reports">View all</button></div><div id="recentReports" class="report-list"><div class="empty">Loading…</div></div></div>
     </section>
-
     <section class="view" id="view-capture">
       <div class="page-head"><div><p class="eyebrow">REPORT INGESTION</p><h1>New report</h1><p class="muted">Photograph the analyzer printout. No PDF upload required.</p></div></div>
       <div class="capture-grid">
         <div class="panel camera-panel">
-          <div class="camera-icon">📷</div><h2>Capture report image</h2><p class="muted">On Android, tap the button to open the rear camera. You can also choose an existing image.</p>
-          <label class="camera-button"><input id="cameraInput" type="file" accept="image/*" capture="environment">Take / choose photo</label>
+          <div class="camera-icon">📷</div><h2>Add report image</h2><p class="muted">Use the camera for a new photo, or select an existing report image from the phone gallery.</p>
+          <div class="upload-choice"><label class="camera-button"><input id="cameraInput" type="file" accept="image/*" capture="environment">📷 Take photo</label><label class="gallery-button"><input id="galleryInput" type="file" accept="image/*">🖼️ Choose from gallery</label></div>
           <div id="previewWrap" class="preview-wrap hidden"><img id="preview" alt="Report preview"><div><strong id="fileName"></strong><small id="fileSize"></small></div></div>
           <button class="primary full" id="uploadBtn" disabled>Upload report image</button><p id="uploadStatus" class="status-text"></p>
         </div>
         <div class="panel tips"><h2>Photo tips</h2><ul><li>Keep the full report inside the frame.</li><li>Avoid glare and strong shadows.</li><li>Hold the phone parallel to the paper.</li><li>Make sure patient name/ID and values are readable.</li><li>JPEG, PNG or WebP up to 15 MB.</li></ul></div>
       </div>
     </section>
-
-    <section class="view" id="view-reports">
-      <div class="page-head"><div><p class="eyebrow">REPORTS</p><h1>Report queue</h1><p class="muted">Track every image through the processing pipeline.</p></div><button class="primary" data-go="capture">＋ New report</button></div>
-      <div class="filter-row"><input id="reportSearch" placeholder="Search report ID or filename…"><select id="reportFilter"><option value="all">All statuses</option><option value="PHOTO_UPLOADED">Photo uploaded</option><option value="NEEDS_VERIFICATION">Needs verification</option><option value="VERIFIED">Verified</option><option value="EXTRACTION_FAILED">Extraction failed</option></select></div>
-      <div class="panel table-panel"><div id="reportsList" class="report-list"><div class="empty">Loading…</div></div></div>
-    </section>
-
-    <section class="view" id="view-verification">
-      <div class="page-head"><div><p class="eyebrow">TECHNICIAN CONTROL</p><h1>Verification</h1><p class="muted">Review OCR output, correct values if necessary, then lock the authoritative result.</p></div></div>
-      <div id="verificationQueue" class="verification-queue"><div class="empty">Loading…</div></div>
-    </section>
-
-    <section class="view" id="view-billing">
-      <div class="page-head"><div><p class="eyebrow">FINANCIAL GATE</p><h1>Billing & payment</h1><p class="muted">A report stays held until the linked order is paid.</p></div></div>
-      <div class="info-banner">🔒 <div><strong>Payment controls report release</strong><span>Pending or partially-paid orders should not dispatch the report.</span></div></div>
-      <div class="panel"><h2>Current payment queue</h2><p class="muted">Billing records and order/payment actions will appear here as the backend billing workflow is expanded.</p><div id="billingList" class="report-list"><div class="empty">Loading…</div></div></div>
-    </section>
-
-    <section class="view" id="view-credits">
-      <div class="page-head"><div><p class="eyebrow">USAGE</p><h1>Report credits</h1><p class="muted">One accepted report image consumes one report credit; exact duplicates should consume none.</p></div></div>
-      <div class="credit-hero"><span>Available balance</span><strong id="creditsBalance">—</strong><small id="creditWarning"></small></div>
-      <div class="panel"><h2>Credit activity</h2><p class="muted">Purchase and recharge controls will be connected to the credit endpoints when centre payment approval is enabled.</p></div>
-    </section>
-
-    <section class="view" id="view-patients">
-      <div class="page-head"><div><p class="eyebrow">PATIENTS</p><h1>Patients</h1><p class="muted">Search patients linked to this centre.</p></div></div>
-      <div class="panel"><div class="search-box"><input id="patientSearch" placeholder="Search name or phone…"></div><div id="patientsList" class="report-list"><div class="empty">Loading…</div></div></div>
-    </section>
-
-    <section class="view" id="view-settings">
-      <div class="page-head"><div><p class="eyebrow">CENTRE</p><h1>Centre settings</h1><p class="muted">Basic centre configuration.</p></div></div>
-      <div class="panel settings-card"><h2>Connection</h2><label>Backend API URL<input id="apiUrlInput" placeholder="https://your-backend.example.com"></label><button class="primary" id="saveApiBtn">Save API URL</button><p class="muted small">For local Android testing, use the computer's LAN IP rather than localhost when the backend runs on another device.</p></div>
-    </section>
+    <section class="view" id="view-reports"><div class="page-head"><div><p class="eyebrow">REPORTS</p><h1>Report queue</h1><p class="muted">Track every image through the processing pipeline.</p></div><button class="primary" data-go="capture">＋ New report</button></div><div class="filter-row"><input id="reportSearch" placeholder="Search report ID or filename…"><select id="reportFilter"><option value="all">All statuses</option><option value="PHOTO_UPLOADED">Photo uploaded</option><option value="NEEDS_VERIFICATION">Needs verification</option><option value="VERIFIED">Verified</option><option value="EXTRACTION_FAILED">Extraction failed</option></select></div><div class="panel table-panel"><div id="reportsList" class="report-list"><div class="empty">Loading…</div></div></div></section>
+    <section class="view" id="view-verification"><div class="page-head"><div><p class="eyebrow">TECHNICIAN CONTROL</p><h1>Verification</h1><p class="muted">Review OCR output, correct values if necessary, then lock the authoritative result.</p></div></div><div id="verificationQueue" class="verification-queue"><div class="empty">Loading…</div></div></section>
+    <section class="view" id="view-billing"><div class="page-head"><div><p class="eyebrow">FINANCIAL GATE</p><h1>Billing & payment</h1><p class="muted">A report stays held until the linked order is paid.</p></div></div><div class="info-banner">🔒 <div><strong>Payment controls report release</strong><span>Pending or partially-paid orders should not dispatch the report.</span></div></div><div class="panel"><h2>Current payment queue</h2><p class="muted">Billing records and order/payment actions will appear here as the backend billing workflow is expanded.</p><div id="billingList" class="report-list"><div class="empty">Loading…</div></div></div></section>
+    <section class="view" id="view-credits"><div class="page-head"><div><p class="eyebrow">USAGE</p><h1>Report credits</h1><p class="muted">One accepted report image consumes one report credit; exact duplicates should consume none.</p></div></div><div class="credit-hero"><span>Available balance</span><strong id="creditsBalance">—</strong><small id="creditWarning"></small></div><div class="panel"><h2>Credit activity</h2><p class="muted">Purchase and recharge controls will be connected to the credit endpoints when centre payment approval is enabled.</p></div></section>
+    <section class="view" id="view-patients"><div class="page-head"><div><p class="eyebrow">PATIENTS</p><h1>Patients</h1><p class="muted">Search patients linked to this centre.</p></div></div><div class="panel"><div class="search-box"><input id="patientSearch" placeholder="Search name or phone…"></div><div id="patientsList" class="report-list"><div class="empty">Loading…</div></div></div></section>
+    <section class="view" id="view-settings"><div class="page-head"><div><p class="eyebrow">CENTRE</p><h1>Centre settings</h1><p class="muted">Basic centre configuration.</p></div></div><div class="panel settings-card"><h2>Connection</h2><label>Backend API URL<input id="apiUrlInput" placeholder="https://your-backend.example.com"></label><button class="primary" id="saveApiBtn">Save API URL</button><p class="muted small">For local Android testing, use the computer's LAN IP rather than localhost when the backend runs on another device.</p></div></section>
   </main>
-
-  <div id="toast" class="toast"></div>
-  <div id="modal" class="modal hidden"><div class="modal-card"><button class="modal-close" id="modalClose">×</button><div id="modalContent"></div></div></div>
+  <div id="toast" class="toast"></div><div id="modal" class="modal hidden"><div class="modal-card"><button class="modal-close" id="modalClose">×</button><div id="modalContent"></div></div></div>
 </div>
 <script src="script.js"></script>
 </body>
