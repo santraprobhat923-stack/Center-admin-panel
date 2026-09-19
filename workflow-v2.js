@@ -67,7 +67,53 @@
     },true);
   }
 
-  function installSettings(){const view=document.getElementById('view-settings');if(!view||view.dataset.workflowV2==='1')return;view.dataset.workflowV2='1';const card=view.querySelector('.settings-card');card.insertAdjacentHTML('beforeend','<hr><h2>PDF template</h2><p class="muted">Upload the centre PDF template. Future generated reports use it automatically.</p><input id="pdfTemplateInput" type="file" accept="application/pdf"><button class="secondary" id="uploadTemplateBtn">Upload PDF template</button><p id="templateStatus" class="muted small"></p><hr><h2>Optional WhatsApp delivery</h2><label><input id="waEnabled" type="checkbox"> Enable WhatsApp sending for this centre</label><label>Centre UPI ID<input id="waUpi" placeholder="centre@upi"></label><label>Public report URL<input id="waBaseUrl" placeholder="https://your-domain.example"></label><button class="primary" id="saveWorkflowSettings">Save WhatsApp settings</button><p class="muted small">WhatsApp is optional. PDF credits are charged only when a PDF is generated.</p>');document.getElementById('uploadTemplateBtn').onclick=async()=>{const f=document.getElementById('pdfTemplateInput').files[0];if(!f)return toast2('Choose a PDF template first.');const fd=new FormData();fd.append('file',f,f.name);try{const d=await api2('/workflow/template',{method:'POST',body:fd});document.getElementById('templateStatus').textContent=`Template saved (${d.size} bytes).`;toast2('Centre PDF template saved.')}catch(e){toast2(e.message)}};document.getElementById('saveWorkflowSettings').onclick=async()=>{try{const d=await api2('/workflow/settings',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({whatsapp_enabled:document.getElementById('waEnabled').checked,upi_id:document.getElementById('waUpi').value,public_base_url:document.getElementById('waBaseUrl').value})});toast2(d.whatsapp_enabled?'WhatsApp delivery enabled.':'WhatsApp delivery disabled.')}catch(e){toast2(e.message)}};api2('/workflow/settings').then(d=>{document.getElementById('waEnabled').checked=!!d.whatsapp_enabled;document.getElementById('waUpi').value=d.upi_id||'';document.getElementById('waBaseUrl').value=d.public_base_url||'';document.getElementById('templateStatus').textContent=d.template_uploaded?'Template uploaded.':'No template uploaded.'}).catch(()=>{});}
+  function installSettings(){
+    const view=document.getElementById('view-settings');
+    if(!view||view.dataset.workflowV2==='1')return;
+    view.dataset.workflowV2='1';
+
+    const templateInput=document.getElementById('pdfTemplateInput');
+    const uploadTemplateBtn=document.getElementById('uploadTemplateBtn');
+    const templateStatus=document.getElementById('templateStatus');
+    uploadTemplateBtn?.addEventListener('click',async()=>{
+      const f=templateInput?.files?.[0];
+      if(!f)return toast2('Choose a PDF template first.');
+      if(f.type!=='application/pdf'&&!f.name.toLowerCase().endsWith('.pdf'))return toast2('Only PDF templates are supported.');
+      if(f.size>15*1024*1024)return toast2('Template is too large. Maximum allowed size is 15 MB.');
+      const fd=new FormData();fd.append('file',f,f.name);
+      uploadTemplateBtn.disabled=true;
+      if(templateStatus)templateStatus.textContent='Uploading template…';
+      try{
+        const d=await api2('/workflow/template',{method:'POST',body:fd});
+        if(templateStatus)templateStatus.textContent=`Template active: ${d.filename||f.name} · ${Math.round((d.size||f.size)/1024)} KB`;
+        toast2('PDF report template uploaded successfully.');
+        templateInput.value='';
+      }catch(e){
+        if(templateStatus)templateStatus.textContent='Template upload failed.';
+        toast2(e.message);
+      }finally{uploadTemplateBtn.disabled=false;}
+    });
+
+    const save=document.getElementById('saveWorkflowSettings');
+    save?.addEventListener('click',async()=>{
+      try{
+        const d=await api2('/workflow/settings',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+          whatsapp_enabled:document.getElementById('waEnabled')?.checked||false,
+          upi_id:document.getElementById('waUpi')?.value||'',
+          public_base_url:document.getElementById('waBaseUrl')?.value||''
+        })});
+        toast2(d.whatsapp_enabled?'WhatsApp delivery enabled.':'WhatsApp delivery disabled.');
+      }catch(e){toast2(e.message);}
+    });
+
+    api2('/workflow/settings').then(d=>{
+      const wa=document.getElementById('waEnabled'),upi=document.getElementById('waUpi'),base=document.getElementById('waBaseUrl');
+      if(wa)wa.checked=!!d.whatsapp_enabled;
+      if(upi)upi.value=d.upi_id||'';
+      if(base)base.value=d.public_base_url||'';
+      if(templateStatus)templateStatus.textContent=d.template_uploaded?'A PDF template is active for this centre.':'No PDF template uploaded yet.';
+    }).catch(()=>{if(templateStatus)templateStatus.textContent='Unable to check template status.';});
+  }
 
   document.addEventListener('DOMContentLoaded',()=>{installBulkUpload();installSettings();bindVerificationEditor();const ob=new MutationObserver(()=>{bindVerificationEditor();});ob.observe(document.body,{childList:true,subtree:true});});
 })();
