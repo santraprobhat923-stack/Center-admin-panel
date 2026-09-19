@@ -15,7 +15,30 @@
 <section class="view" id="view-billing"><div class="page-head"><div><p class="eyebrow">FINANCIAL GATE</p><h1>Billing & payment</h1><p class="muted">After PDF generation, record paid or pending amount. Paid reports are released; pending reports can use optional WhatsApp + UPI.</p></div></div><div class="info-banner">🔒 <div><strong>Patient payment comes after PDF generation</strong><span>PDF credit and patient payment are separate steps.</span></div></div><div class="panel"><h2>Current payment queue</h2><p class="muted">Link each generated report to the patient's order, record paid/pending amount, then use optional WhatsApp delivery.</p><div id="billingList" class="report-list"><div class="empty">Loading…</div></div></div></section>
 <section class="view" id="view-credits"><div class="page-head"><div><p class="eyebrow">USAGE</p><h1>Report credits</h1><p class="muted">1 generated PDF = 1 credit. Default price is ₹3 per credit. Recharge when the balance is low.</p></div></div><div class="credit-hero"><span>Available balance</span><strong id="creditsBalance">—</strong><small id="creditWarning"></small></div><div class="panel"><h2>Credit activity</h2><p class="muted">Recharge requests are handled by the existing credit system. WhatsApp delivery does not consume report credits.</p></div></section>
 <section class="view" id="view-patients"><div class="page-head"><div><p class="eyebrow">PATIENTS</p><h1>Patients</h1><p class="muted">Patients are isolated by centre ID.</p></div></div><div class="panel"><div class="search-box"><input id="patientSearch" placeholder="Search name, phone or patient code…"></div><div id="patientsList" class="report-list"><div class="empty">Loading…</div></div></div></section>
-<section class="view" id="view-settings"><div class="page-head"><div><p class="eyebrow">CENTRE</p><h1>Centre settings</h1><p class="muted">Connection, PDF template and optional WhatsApp delivery settings.</p></div></div><div class="panel settings-card"><h2>Connection</h2><label>Backend API URL<input id="apiUrlInput" placeholder="https://your-backend.example.com"></label><button class="primary" id="saveApiBtn">Save API URL</button><p class="muted small">For local Android testing, use the computer's LAN IP rather than localhost when the backend runs on another device.</p></div></section>
+<section class="view" id="view-settings"><div class="page-head"><div><p class="eyebrow">CENTRE</p><h1>Centre settings</h1><p class="muted">Connection, PDF template and optional WhatsApp delivery settings.</p></div></div><div class="panel settings-card">
+<h2>Connection</h2>
+<label>Backend API URL<input id="apiUrlInput" placeholder="https://your-backend.example.com"></label>
+<button class="primary" id="saveApiBtn">Save API URL</button>
+<p class="muted small">For local Android testing, use the computer's LAN IP rather than localhost when the backend runs on another device.</p>
+</div>
+<div class="panel settings-card">
+<h2>PDF Report Template</h2>
+<p class="muted">Upload the centre's blank report PDF. Generated reports will use this template as the report background.</p>
+<div class="template-upload-box">
+<label class="gallery-button"><input id="pdfTemplateInput" type="file" accept="application/pdf">📄 Choose PDF template</label>
+<button class="primary" id="uploadTemplateBtn" type="button">Upload / Replace template</button>
+</div>
+<p id="templateStatus" class="status-text">Checking template status…</p>
+<p class="muted small">Maximum template size: 15 MB. The template belongs only to this centre.</p>
+</div>
+<div class="panel settings-card">
+<h2>Optional WhatsApp delivery</h2>
+<label><input id="waEnabled" type="checkbox"> Enable WhatsApp sending for this centre</label>
+<label>Centre UPI ID<input id="waUpi" placeholder="centre@upi"></label>
+<label>Public report URL<input id="waBaseUrl" placeholder="https://your-domain.example"></label>
+<button class="primary" id="saveWorkflowSettings">Save WhatsApp settings</button>
+<p class="muted small">WhatsApp is optional. PDF credits are charged only when a PDF is generated.</p>
+</div></section>
 </main><div id="toast" class="toast"></div><div id="modal" class="modal hidden"><div class="modal-card"><button class="modal-close" id="modalClose">×</button><div id="modalContent"></div></div></div>
 </div><script src="script.js?v=37102c8"></script><script src="ocr-ui-fix.js?v=1"></script><script src="pdf-actions.js?v=1"></script><script src="m5-payment-ui.js?v=1"></script><script src="workflow-v2.js?v=3"></script><script src="whatsapp-v2.js?v=1"></script>
 </body></html>
